@@ -53,11 +53,14 @@ def main():
                     'pid'), track['track_uri'], track.get('pos'))
                 playlistTracksValues.add(playlistTrackValue)
 
+        # print(f"Playlist Tracks: {len(playlistTracksValues)}")
+
         # Convert sets to lists before passing them to the bulk_insert functions
         bulk_insert_artists(list(artistsValues))
         bulk_insert_albums(list(albumsValues))
         bulk_insert_tracks(list(tracksValues))
         bulk_insert_playlists(list(playlistsValues))
+
         bulk_insert_playlist_tracks(list(playlistTracksValues))
 
     print("Données inserees avec succes")

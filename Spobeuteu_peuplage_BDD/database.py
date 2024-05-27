@@ -9,12 +9,6 @@ DB_CONFIG = {
     'database': 'spobeuteu',
 }
 
-BATCH_SIZE_ARTISTS = 1000
-BATCH_SIZE_ALBUMS = 5000
-BATCH_SIZE_TRACKS = 7000
-BATCH_SIZE_PLAYLISTS = 1000
-BATCH_SIZE_PLAYLIST_TRACKS = 10000
-
 conn = None
 
 
@@ -49,12 +43,9 @@ def bulk_insert_artists(values):
     # Start a new transaction
     cursor.execute("START TRANSACTION")
 
-    # Insert data in batches
-    batch_size = BATCH_SIZE_ARTISTS
-    for i in range(0, len(values), batch_size):
-        batch_values = values[i:i+batch_size]
-        cursor.executemany(
-            "INSERT IGNORE INTO artists (artist_uri, artist_name) VALUES (%s, %s)", batch_values)
+    # Insert data
+    cursor.executemany(
+        "INSERT IGNORE INTO artists (artist_uri, artist_name) VALUES (%s, %s)", values)
 
     # Commit the transaction
     cursor.execute("COMMIT")
@@ -67,12 +58,9 @@ def bulk_insert_albums(values):
     # Start a new transaction
     cursor.execute("START TRANSACTION")
 
-    # Insert data in batches
-    batch_size = BATCH_SIZE_ALBUMS
-    for i in range(0, len(values), batch_size):
-        batch_values = values[i:i+batch_size]
-        cursor.executemany(
-            "INSERT IGNORE INTO albums (album_uri, album_name , artist_uri) VALUES (%s, %s, %s)", batch_values)
+    # Insert data
+    cursor.executemany(
+        "INSERT IGNORE INTO albums (album_uri, album_name, artist_uri) VALUES (%s, %s, %s)", values)
 
     # Commit the transaction
     cursor.execute("COMMIT")
@@ -85,12 +73,9 @@ def bulk_insert_tracks(values):
     # Start a new transaction
     cursor.execute("START TRANSACTION")
 
-    # Insert data in batches
-    batch_size = BATCH_SIZE_TRACKS
-    for i in range(0, len(values), batch_size):
-        batch_values = values[i:i+batch_size]
-        cursor.executemany(
-            "INSERT IGNORE INTO tracks (track_uri, track_name, duration_ms, artist_uri, album_uri) VALUES (%s, %s, %s, %s, %s)", batch_values)
+    # Insert data
+    cursor.executemany(
+        "INSERT IGNORE INTO tracks (track_uri, track_name, duration_ms, artist_uri, album_uri) VALUES (%s, %s, %s, %s, %s)", values)
 
     # Commit the transaction
     cursor.execute("COMMIT")
@@ -103,12 +88,9 @@ def bulk_insert_playlists(values):
     # Start a new transaction
     cursor.execute("START TRANSACTION")
 
-    # Insert data in batches
-    batch_size = BATCH_SIZE_PLAYLISTS
-    for i in range(0, len(values), batch_size):
-        batch_values = values[i:i+batch_size]
-        cursor.executemany(
-            "INSERT IGNORE INTO playlists (pid, name, num_albums, num_tracks, num_followers) VALUES (%s, %s, %s, %s, %s)", batch_values)
+    # Insert data
+    cursor.executemany(
+        "INSERT IGNORE INTO playlists (pid, name, num_followers,  num_tracks, num_albums) VALUES (%s, %s, %s, %s, %s)", values)
 
     # Commit the transaction
     cursor.execute("COMMIT")
@@ -121,12 +103,9 @@ def bulk_insert_playlist_tracks(values):
     # Start a new transaction
     cursor.execute("START TRANSACTION")
 
-    # Insert data in batches
-    batch_size = BATCH_SIZE_PLAYLIST_TRACKS
-    for i in range(0, len(values), batch_size):
-        batch_values = values[i:i+batch_size]
-        cursor.executemany(
-            "INSERT IGNORE INTO playlist_tracks (pid, track_uri, pos) VALUES (%s, %s, %s)", batch_values)
+    # Insert data
+    cursor.executemany(
+        "INSERT IGNORE INTO playlist_tracks (pid, track_uri, pos) VALUES (%s, %s, %s)", values)
 
     # Commit the transaction
     cursor.execute("COMMIT")
