@@ -23,7 +23,8 @@ def main():
     data_dir = 'data'
     json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
 
-    for json_file in json_files:
+    # Seulement les 10 premiers fichiers pour test
+    for json_file in json_files[:10]:
         file_path = os.path.join(data_dir, json_file)
         data = load_data(file_path)
 
@@ -53,14 +54,11 @@ def main():
                     'pid'), track['track_uri'], track.get('pos'))
                 playlistTracksValues.add(playlistTrackValue)
 
-        # print(f"Playlist Tracks: {len(playlistTracksValues)}")
-
         # Convert sets to lists before passing them to the bulk_insert functions
         bulk_insert_artists(list(artistsValues))
         bulk_insert_albums(list(albumsValues))
         bulk_insert_tracks(list(tracksValues))
         bulk_insert_playlists(list(playlistsValues))
-
         bulk_insert_playlist_tracks(list(playlistTracksValues))
 
     print("Données inserees avec succes")

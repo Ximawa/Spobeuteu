@@ -89,7 +89,7 @@ class PlaylistTrack(Base):
 def get_engine():
     username = "root"
     password = ""
-    database_name = "spobeuteu"
+    database_name = "spob"
 
     database_url = f"mysql+pymysql://{
         username}:{password}@localhost/{database_name}"
