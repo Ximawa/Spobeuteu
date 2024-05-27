@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import BarGraphComponents from "../components/BarGraphComponents";
 import StatBar from "../components/StatBar";
+import SidebarMain from "../components/SidebarMain";
 
 const HomePage = () => {
   const [chartData, setChartData] = useState({
@@ -55,12 +56,33 @@ const HomePage = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-3">
-          <StatBar />
-        </div>
-        <div className="col-span-3">
-          <BarGraphComponents data={chartData} options={chartOptions} />
+      <SidebarMain />
+
+      <div className="grid grid-cols-4 gap-4">
+        <div className="col-span-4"></div>
+        <div className="col-span-4"></div>
+      </div>
+      <div class="p-4 sm:ml-64">
+        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+          <div class="grid grid-cols-4 gap-4 mb-4">
+            <StatBar />
+          </div>
+          <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
+            <BarGraphComponents data={chartData} options={chartOptions} />
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+          </div>
+          <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800"></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+            <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800"></div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .models import Playlist
+from .models import Playlist, Artist, Track, Album
 
 
 def get_word_popularity(playlists):
@@ -25,3 +25,19 @@ def get_all_playlists_names(db: Session):
 def get_playlist_name_popularity(db: Session):
     playlists = get_all_playlists_names(db)
     return get_word_popularity(playlists)
+
+
+def get_number_of_playlists(db: Session):
+    return db.query(Playlist).count()
+
+
+def get_number_of_artists(db: Session):
+    return db.query(Artist).count()
+
+
+def get_number_of_tracks(db: Session):
+    return db.query(Track).count()
+
+
+def get_number_of_albums(db: Session):
+    return db.query(Album).count()
