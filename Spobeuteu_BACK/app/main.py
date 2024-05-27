@@ -25,20 +25,30 @@ def get_word_popularity_route(db: Session = Depends(get_db)):
 
 
 @app.get("/playlist-count")
-def get_count_playlists(db: Session = Depends(get_db)):
+def get_count_playlists_route(db: Session = Depends(get_db)):
     return get_number_of_playlists(db)
 
 
 @app.get("/artist-count")
-def get_count_artists(db: Session = Depends(get_db)):
+def get_count_artists_route(db: Session = Depends(get_db)):
     return get_number_of_artists(db)
 
 
 @app.get("/track-count")
-def get_count_tracks(db: Session = Depends(get_db)):
+def get_count_tracks_route(db: Session = Depends(get_db)):
     return get_number_of_tracks(db)
 
 
 @app.get("/album-count")
-def get_count_albums(db: Session = Depends(get_db)):
+def get_count_albums_route(db: Session = Depends(get_db)):
     return get_number_of_albums(db)
+
+
+@app.get("/artist-popularity")
+def get_artist_popularity_route(db: Session = Depends(get_db)):
+    return get_artist_popularity(db)
+
+
+@app.get("/track-popularity")
+def get_track_popularity_route(db: Session = Depends(get_db)):
+    return get_track_popularity(db)

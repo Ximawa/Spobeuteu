@@ -23,7 +23,7 @@ const BarGraphComponents = ({ data, options }) => {
   // For debug
   // console.log(data);
   return (
-    <div>
+    <div className="h-full w-full">
       <Bar data={data} options={options} />
     </div>
   );
