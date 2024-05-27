@@ -2,7 +2,7 @@
 
 ## INSTALL DEPENDENCIES
 ```
-
+npm install
 ```
 
 ## START SERV
