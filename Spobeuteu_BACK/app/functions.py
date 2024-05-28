@@ -203,3 +203,31 @@ def get_track_popularity_by_artist(db: Session, artist_uri: str):
                              for name, count in track_popularity_list]
 
     return track_popularity_list
+
+
+def get_album_popularity_by_artist(db: Session, artist_uri: str):
+    # Query for album popularity by the given artist in a single query
+    album_popularity_list = db.query(
+        Album.album_name,
+        func.count(PlaylistTrack.pid).label('count')
+    ).select_from(
+        Album
+    ).join(
+        Track, Track.album_uri == Album.album_uri
+    ).join(
+        Artist, Artist.artist_uri == Track.artist_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        Artist.artist_uri == artist_uri
+    ).group_by(
+        Album.album_name
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).limit(10).all()
+
+    # Convert the result to the desired format
+    album_popularity_list = [{"text": name, "value": count}
+                             for name, count in album_popularity_list]
+
+    return album_popularity_list

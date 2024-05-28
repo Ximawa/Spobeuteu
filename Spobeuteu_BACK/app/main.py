@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import get_db
 from .functions import *
 
+# TODO add colaborative et datetime en bdd
 
 app = FastAPI()
 
@@ -92,3 +93,8 @@ def get_artist_popularity_rank_route(artist_uri: str, db: Session = Depends(get_
 @app.get("/artist-tracks-popularity/{artist_uri}")
 def get_artist_tracks_popularity_route(artist_uri: str, db: Session = Depends(get_db)):
     return get_track_popularity_by_artist(db, artist_uri)
+
+
+@app.get("/artist-album-popularity/{artist_uri}")
+def get_artist_album_popularity_route(artist_uri: str, db: Session = Depends(get_db)):
+    return get_album_popularity_by_artist(db, artist_uri)

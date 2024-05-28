@@ -10,13 +10,19 @@ const ArtistPage = () => {
   const [artist_uri, setArtist_uri] = useState("");
   const [query, setQuery] = useState("");
   const [trackPopularityLoading, setTrackPopularityLoading] = useState(true);
+  const [albumPopularityLoading, setAlbumPopularityLoading] = useState(true);
 
   const [chartData1, setChartData1] = useState({
     labels: [],
     datasets: [],
   });
+  const [chartData2, setChartData2] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   const [chartOptions1, setChartOptions1] = useState({});
+  const [chartOptions2, setChartOptions2] = useState({});
 
   useEffect(() => {
     console.log("reload");
@@ -53,6 +59,45 @@ const ArtistPage = () => {
             title: {
               display: true,
               text: "Chansons les plus populaire de l'artiste",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        });
+      });
+
+    fetch(`http://localhost:8000/artist-album-popularity/${artist_uri}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Transformer les données reçues pour qu'elles soient compatibles avec Chart.js
+        const labels = data.map((item) => item.text);
+        const values = data.map((item) => item.value);
+
+        setChartData2({
+          labels: labels,
+          datasets: [
+            {
+              label: "presences des albums",
+              data: values,
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        });
+        setAlbumPopularityLoading(false);
+        setChartOptions2({
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            title: {
+              display: true,
+              text: "Albums les plus populaire de l'artiste",
             },
           },
           scales: {
@@ -103,7 +148,14 @@ const ArtistPage = () => {
                   )}
                 </div>
                 <div className="flex items-center justify-center rounded bg-gray-800  dark:bg-gray-800">
-                  dfgfg
+                  {albumPopularityLoading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <BarGraphComponents
+                      data={chartData2}
+                      options={chartOptions2}
+                    />
+                  )}
                 </div>
               </div>
             </>
