@@ -87,3 +87,8 @@ def get_artist_album_count_route(artist_uri: str, db: Session = Depends(get_db))
 @app.get("/artist-popularity/{artist_uri}")
 def get_artist_popularity_rank_route(artist_uri: str, db: Session = Depends(get_db)):
     return get_artist_popularity_rank(db, artist_uri)
+
+
+@app.get("/artist-tracks-popularity/{artist_uri}")
+def get_artist_tracks_popularity_route(artist_uri: str, db: Session = Depends(get_db)):
+    return get_track_popularity_by_artist(db, artist_uri)
