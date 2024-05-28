@@ -35,7 +35,7 @@ const SidebarMain = () => {
           <ul className="space-y-2 font-medium">
             <li>
               <a
-                href="#"
+                href="/"
                 className="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg
@@ -53,7 +53,7 @@ const SidebarMain = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="/artist"
                 className="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg

@@ -52,3 +52,18 @@ def get_artist_popularity_route(db: Session = Depends(get_db)):
 @app.get("/track-popularity")
 def get_track_popularity_route(db: Session = Depends(get_db)):
     return get_track_popularity(db)
+
+
+@app.get("/album-popularity")
+def get_album_popularity_route(db: Session = Depends(get_db)):
+    return get_album_popularity(db)
+
+
+@app.get("/average-tracks-length")
+def get_average_tracks_length_route(db: Session = Depends(get_db)):
+    return get_average_tracks_length(db)
+
+
+@app.get("/artist-list/{artist_name}")
+def get_artist_list_route(artist_name: str, db: Session = Depends(get_db)):
+    return get_artist_starting_by(db, artist_name)

@@ -18,14 +18,26 @@ const HomePage = () => {
     labels: [],
     datasets: [],
   });
+  const [chartData4, setChartData4] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [chartData5, setChartData5] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   const [chartOptions1, setChartOptions1] = useState({});
   const [chartOptions2, setChartOptions2] = useState({});
   const [chartOptions3, setChartOptions3] = useState({});
+  const [chartOptions4, setChartOptions4] = useState({});
+  const [chartOptions5, setChartOptions5] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading2, setIsLoading2] = useState(true);
   const [isLoading3, setIsLoading3] = useState(true);
+  const [isLoading4, setIsLoading4] = useState(true);
+  const [isLoading5, setIsLoading5] = useState(true);
 
   useEffect(() => {
     // Remplacer l'URL par celle de votre API
@@ -81,7 +93,7 @@ const HomePage = () => {
           labels: labels,
           datasets: [
             {
-              label: "Presence dans les playlists",
+              label: "Nombre d'apparation dans les playlists",
               data: values,
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
@@ -120,7 +132,7 @@ const HomePage = () => {
           labels: labels,
           datasets: [
             {
-              label: "Presence dans les playlists",
+              label: "Nombres d'apparition dans les playlists",
               data: values,
               backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
@@ -138,6 +150,85 @@ const HomePage = () => {
             title: {
               display: true,
               text: "10 chanson les plus populaires dans les playlists",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        });
+      });
+
+    fetch("http://localhost:8000/average-tracks-length")
+      .then((response) => response.json())
+      .then((data) => {
+        // Transformer les données reçues pour qu'elles soient compatibles avec Chart.js
+        const labels = data.map((item) => item.text);
+        const values = data.map((item) => item.value);
+
+        setChartData4({
+          labels: labels,
+          datasets: [
+            {
+              label: "Nombre de tracks",
+              data: values,
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        });
+        setIsLoading4(false);
+        setChartOptions4({
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            title: {
+              display: true,
+              text:
+                "Repartition de la duree des tracks dans les playlists (interval de 15s)",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        });
+      });
+
+    fetch("http://localhost:8000/album-popularity")
+      .then((response) => response.json())
+      .then((data) => {
+        // Transformer les données reçues pour qu'elles soient compatibles avec Chart.js
+        const labels = data.map((item) => item.text);
+        const values = data.map((item) => item.value);
+
+        setChartData5({
+          labels: labels,
+          datasets: [
+            {
+              label: "Nombre d'apparition dans les playlists",
+              data: values,
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
+              borderWidth: 1,
+            },
+          ],
+        });
+        setIsLoading5(false);
+        setChartOptions5({
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            title: {
+              display: true,
+              text: "10 albums les plus populaires dans les playlists",
             },
           },
           scales: {
@@ -183,11 +274,21 @@ const HomePage = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-800 dark:bg-gray-800"></div>
+          <div className="flex items-center justify-center mb-4 rounded bg-gray-800 dark:bg-gray-800">
+            {isLoading4 ? (
+              <LoadingSpinner />
+            ) : (
+              <BarGraphComponents data={chartData4} options={chartOptions4} />
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center justify-center rounded bg-gray-800 h-28 dark:bg-gray-800"></div>
-            <div className="flex items-center justify-center rounded bg-gray-800 h-28 dark:bg-gray-800"></div>
-            <div className="flex items-center justify-center rounded bg-gray-800 h-28 dark:bg-gray-800"></div>
+            <div className="flex items-center justify-center rounded bg-gray-800 dark:bg-gray-800">
+              {isLoading5 ? (
+                <LoadingSpinner />
+              ) : (
+                <BarGraphComponents data={chartData5} options={chartOptions5} />
+              )}
+            </div>
             <div className="flex items-center justify-center rounded bg-gray-800 h-28 dark:bg-gray-800"></div>
           </div>
         </div>

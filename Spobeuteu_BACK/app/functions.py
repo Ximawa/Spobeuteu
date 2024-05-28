@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from .models import Playlist, Artist, Track, Album
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, text
 
 
 def get_word_popularity(playlists, limit):
@@ -61,7 +61,6 @@ def get_artist_popularity(db: Session):
     return artist_popularity_list
 
 
-# TODO add nom de l'artist des chanson
 def get_track_popularity(db: Session):
     # Query for track popularity in a single query
     track_popularity_list = db.query(Track.track_name + " by " + Artist.artist_name, func.count(Track.track_uri).label(
@@ -72,3 +71,48 @@ def get_track_popularity(db: Session):
                              for name, count in track_popularity_list]
 
     return track_popularity_list
+
+
+def get_album_popularity(db: Session):
+    # Query for album popularity in a single query
+    album_popularity_list = db.query(
+        Album.album_name,  # Modify this line
+        func.count(Track.album_uri).label('count')
+    ).join(Artist, Artist.artist_uri == Track.artist_uri
+           ).join(Album, Track.album_uri == Album.album_uri
+                  ).group_by(Album.album_name
+                             ).order_by(func.count(Track.album_uri).desc()
+                                        ).limit(10).all()
+
+    # Convert the result to the desired format
+    album_popularity_list = [{"text": name, "value": count}
+                             for name, count in album_popularity_list]
+
+    return album_popularity_list
+
+
+def get_average_tracks_length(db: Session):
+    # Query for track duration in 15 seconds intervals
+    track_duration_list = db.query(
+        (func.round(Track.duration_ms / 15000) * 15).label('interval'),
+        func.count(Track.track_uri).label('count')
+    ).group_by('interval').all()
+
+    # Convert the result to the desired format
+    track_duration_list = [{
+        "text": f"{int(interval // 60)}:{int(interval % 60):02d}",
+        "value": count
+    } for interval, count in track_duration_list]
+
+    return track_duration_list
+
+
+def get_artist_starting_by(db: Session, letter: str):
+    # Query for artist URIs and names starting with the given letter
+    artist_list = db.query(Artist.artist_uri, Artist.artist_name).filter(
+        Artist.artist_name.like(f'{letter}%')).all()
+
+    # Create a dictionary where the keys are the artist URIs and the values are the artist names
+    artist_dict = {uri: name for uri, name in artist_list}
+
+    return artist_dict
