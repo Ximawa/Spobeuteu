@@ -3,19 +3,19 @@ import CardStats from "./CardStats";
 
 const StatBar = () => {
   const [playlistData, setPlaylistData] = useState({
-    Titre: "Nombre de playlists",
+    Titre: "",
     Value: 0,
   });
   const [trackData, setTrackData] = useState({
-    Titre: "Nombre de tracks",
+    Titre: "",
     Value: 0,
   });
   const [artistData, setArtistData] = useState({
-    Titre: "Nombre d'artistes",
+    Titre: "",
     Value: 0,
   });
   const [albumData, setAlbumData] = useState({
-    Titre: "Nombre d'albums",
+    Titre: "",
     Value: 0,
   });
 

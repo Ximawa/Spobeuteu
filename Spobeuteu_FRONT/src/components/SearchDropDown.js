@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const SearchDropDown = () => {
-  const [query, setQuery] = useState("");
+const SearchDropDown = ({ url, initialQuery, onSuggestionClick }) => {
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState({});
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   const handleInputChange = async (e) => {
     const value = e.target.value;
@@ -10,17 +14,14 @@ const SearchDropDown = () => {
 
     if (value) {
       try {
-        const response = await fetch(
-          `http://localhost:8000/artist-list/${value}`
-        );
+        const response = await fetch(`${url}/${value}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setSuggestions(data);
-        console.log(suggestions);
       } catch (error) {
-        console.error("Erreur lors de la récupération des suggestions:", error);
+        console.error("Error fetching suggestions:", error);
       }
     } else {
       setSuggestions({});
@@ -43,7 +44,7 @@ const SearchDropDown = () => {
               key={id}
               className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
               onClick={() => {
-                setQuery(name);
+                onSuggestionClick(name, id);
                 setSuggestions({});
               }}
             >

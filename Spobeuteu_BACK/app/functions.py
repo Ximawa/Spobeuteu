@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .models import Playlist, Artist, Track, Album
+from .models import Playlist, Artist, Track, Album, PlaylistTrack
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
 
@@ -116,3 +116,66 @@ def get_artist_starting_by(db: Session, letter: str):
     artist_dict = {uri: name for uri, name in artist_list}
 
     return artist_dict
+
+
+def get_artist_tracks_count_in_playlist(db: Session, artist_uri: str):
+    # Query for the count of tracks by the given artist in a single query
+    count = db.query(func.count(Track.track_name)).filter(
+        Track.artist_uri == artist_uri).scalar()
+
+    return count
+
+
+def get_artist_presence_in_playlists(db: Session, artist_uri: str):
+   # Query for the count of distinct playlists that contain a track by the given artist
+    count = db.query(PlaylistTrack.pid).join(
+        Track, Track.track_uri == PlaylistTrack.track_uri
+    ).filter(
+        Track.artist_uri == artist_uri
+    ).distinct().count()
+
+    return count
+
+
+def get_artist_albums_in_playlists(db: Session, artist_uri: str):
+    # Query for the count of distinct albums of the given artist that are in playlists
+    count = db.query(Album.album_uri).join(
+        Track, Track.album_uri == Album.album_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        Track.artist_uri == artist_uri
+    ).distinct().count()
+
+    return count
+
+
+def get_artist_popularity_rank(db: Session, artist_uri: str):
+    # Subquery to count the number of tracks by each artist in playlists
+    subquery = db.query(
+        Track.artist_uri,
+        func.count(PlaylistTrack.pid).label('popularity')
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Track.artist_uri
+    ).subquery()
+
+    # Query to get the popularity of the given artist
+    artist_popularity = db.query(
+        subquery.c.popularity
+    ).filter(
+        subquery.c.artist_uri == artist_uri
+    ).scalar()
+
+    # Query to get the rank of the given artist in the popularity ladder
+    rank = db.query(
+        func.count(subquery.c.artist_uri)
+    ).filter(
+        subquery.c.popularity > artist_popularity
+    ).scalar()
+
+    # Add 1 to the rank because the rank is 0-based
+    rank += 1
+
+    return rank
