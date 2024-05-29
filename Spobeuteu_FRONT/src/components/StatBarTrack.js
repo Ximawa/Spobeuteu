@@ -39,7 +39,7 @@ const StatBarTrack = (track_uri) => {
       .then((data) => {
         setLenghtData({
           Titre: "Duree de la chanson",
-          Value: `${Math.floor(data / 60)}:${data % 60}`,
+          Value: `${Math.floor(data / 60)}:${Math.round(data % 60)}`,
         });
         setIsLenghtLoading(false);
       });

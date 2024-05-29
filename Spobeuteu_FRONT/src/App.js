@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import ArtistPage from "./pages/ArtistPage";
 import AlbumPage from "./pages/AlbumPage";
 import TrackPage from "./pages/TrackPage";
+import PlaylistPage from "./pages/PlaylistPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/artist" element={<ArtistPage />} />
         <Route path="/album" element={<AlbumPage />} />
         <Route path="/track" element={<TrackPage />} />
+        <Route path="/playlist" element={<PlaylistPage />} />
       </Routes>
     </Router>
   );

@@ -80,6 +80,11 @@ def get_track_list_route(track_name: str, db: Session = Depends(get_db)):
     return get_track_starting_by(db, track_name)
 
 
+@app.get("/playlist-list/{playlist_name}")
+def get_playlist_list_route(playlist_name: str, db: Session = Depends(get_db)):
+    return get_playlist_starting_by(db, playlist_name)
+
+
 @app.get("/track-count/{artist_uri}")
 def get_artist_count_route(artist_uri: str, db: Session = Depends(get_db)):
     return get_artist_tracks_count_in_playlist(db, artist_uri)
@@ -148,3 +153,28 @@ def get_track_presence_playlists_route(track_uri: str, db: Session = Depends(get
 @app.get("/track-length/{track_uri}")
 def get_track_length_route(track_uri: str, db: Session = Depends(get_db)):
     return get_track_length(db, track_uri)
+
+
+@app.get("/playlist-track-count/{playlist_pid}")
+def get_playlist_track_count_route(playlist_pid: str, db: Session = Depends(get_db)):
+    return get_playlist_track_count(db, playlist_pid)
+
+
+@app.get("/playlist-unique-artist-count/{playlist_pid}")
+def get_playlist_unique_artist_count_route(playlist_pid: str, db: Session = Depends(get_db)):
+    return get_playlist_unique_artist_count(db, playlist_pid)
+
+
+@app.get("/playlist-unique-album-count/{playlist_pid}")
+def get_playlist_unique_album_count_route(playlist_pid: str, db: Session = Depends(get_db)):
+    return get_playlist_unique_album_count(db, playlist_pid)
+
+
+@app.get("/playlist-avg-track-duration/{playlist_pid}")
+def get_playlist_avg_track_duration_route(playlist_pid: str, db: Session = Depends(get_db)):
+    return get_playlist_avg_track_duration(db, playlist_pid)
+
+
+@app.get("/playlist-artist-track-count/{playlist_pid}")
+def get_playlist_artist_track_count_route(playlist_pid: str, db: Session = Depends(get_db)):
+    return get_playlist_artist_track_count(db, playlist_pid)

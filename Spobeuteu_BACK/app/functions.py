@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from .models import Playlist, Artist, Track, Album, PlaylistTrack
 from sqlalchemy.orm import Session
-from sqlalchemy import func, text
+from sqlalchemy import func
 
 
 def get_word_popularity(playlists, limit):
@@ -412,3 +412,84 @@ def get_track_length(db: Session, track_uri: str):
     track_length_in_seconds = track_length[0] / 1000
 
     return track_length_in_seconds
+
+
+def get_playlist_starting_by(db: Session, letter: str):
+    # Query for playlist URIs and names starting with the given letter
+    playlist_list = db.query(Playlist.pid, Playlist.name).filter(
+        Playlist.name.like(f'{letter}%')).all()
+
+    # Create a dictionary where the keys are the playlist URIs and the values are the playlist names
+    playlist_dict = {pid: name for pid, name in playlist_list}
+
+    return playlist_dict
+
+
+def get_playlist_track_count(db: Session, playlist_pid: str):
+    # Query for the count of tracks in the given playlist
+    count = db.query(PlaylistTrack.track_uri).filter(
+        PlaylistTrack.pid == playlist_pid
+    ).count()
+
+    return count
+
+
+def get_playlist_unique_artist_count(db: Session, playlist_pid: str):
+    # Query for the count of distinct artists in the given playlist
+    count = db.query(Track.artist_uri).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        PlaylistTrack.pid == playlist_pid
+    ).distinct().count()
+
+    return count
+
+
+def get_playlist_unique_album_count(db: Session, playlist_pid: str):
+    # Query for the count of distinct albums in the given playlist
+    count = db.query(Track.album_uri).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        PlaylistTrack.pid == playlist_pid
+    ).distinct().count()
+
+    return count
+
+
+def get_playlist_avg_track_duration(db: Session, playlist_pid: str):
+    # Query for the average duration of tracks in the given playlist
+    avg_duration = db.query(func.avg(Track.duration_ms)).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        PlaylistTrack.pid == playlist_pid
+    ).scalar()
+
+    if avg_duration is None:
+        return "No tracks found in the playlist."
+
+    # Convert the average duration to seconds
+    avg_duration_in_seconds = avg_duration / 1000
+
+    return avg_duration_in_seconds
+
+
+def get_playlist_artist_track_count(db: Session, playlist_pid: str):
+    # Query for each artist and the count of their tracks in the given playlist
+    artist_track_count = db.query(
+        Artist.artist_name,
+        func.count(Track.track_uri).label('track_count')
+    ).join(
+        Track, Track.artist_uri == Artist.artist_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        PlaylistTrack.pid == playlist_pid
+    ).group_by(
+        Artist.artist_name
+    ).all()
+
+    # Convert the result to a dictionary
+    artist_track_count = [{"text": name, "value": count}
+                          for name, count in artist_track_count]
+
+    return artist_track_count
