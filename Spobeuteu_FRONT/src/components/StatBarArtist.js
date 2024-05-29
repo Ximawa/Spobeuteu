@@ -53,7 +53,7 @@ const StatBarArtist = (artist_uri) => {
         });
         setIsArtistLoading(false);
       });
-  }, []);
+  }, [artist_uri]);
 
   return (
     <>

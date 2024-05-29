@@ -70,6 +70,16 @@ def get_artist_list_route(artist_name: str, db: Session = Depends(get_db)):
     return get_artist_starting_by(db, artist_name)
 
 
+@app.get("/album-list/{album_name}")
+def get_album_list_route(album_name: str, db: Session = Depends(get_db)):
+    return get_album_starting_by(db, album_name)
+
+
+@app.get("/track-list/{track_name}")
+def get_track_list_route(track_name: str, db: Session = Depends(get_db)):
+    return get_track_starting_by(db, track_name)
+
+
 @app.get("/track-count/{artist_uri}")
 def get_artist_count_route(artist_uri: str, db: Session = Depends(get_db)):
     return get_artist_tracks_count_in_playlist(db, artist_uri)
@@ -98,3 +108,43 @@ def get_artist_tracks_popularity_route(artist_uri: str, db: Session = Depends(ge
 @app.get("/artist-album-popularity/{artist_uri}")
 def get_artist_album_popularity_route(artist_uri: str, db: Session = Depends(get_db)):
     return get_album_popularity_by_artist(db, artist_uri)
+
+
+@app.get("/album-popularity/{album_uri}")
+def get_album_popularity_rank_route(album_uri: str, db: Session = Depends(get_db)):
+    return get_album_popularity_by_id(db, album_uri)
+
+
+@app.get("/album-playlist-count/{album_uri}")
+def get_album_playlist_count_route(album_uri: str, db: Session = Depends(get_db)):
+    return get_album_presence_in_playlist(db, album_uri)
+
+
+@app.get("/album-unique-tracks/{album_uri}")
+def get_album_unique_tracks_route(album_uri: str, db: Session = Depends(get_db)):
+    return get_album_unique_tracks_in_playlists(db, album_uri)
+
+
+@app.get("/album-track-presence/{album_uri}")
+def get_album_track_presence_route(album_uri: str, db: Session = Depends(get_db)):
+    return get_album_tracks_in_playlists(db, album_uri)
+
+
+@app.get("/track-popularity-by-album/{album_uri}")
+def get_track_popularity_by_album_route(album_uri: str, db: Session = Depends(get_db)):
+    return get_album_tracks_popularity(db, album_uri)
+
+
+@app.get("/track-popularity/{track_uri}")
+def get_track_popularity_rank_route(track_uri: str, db: Session = Depends(get_db)):
+    return get_track_popularity_rank(db, track_uri)
+
+
+@app.get("/track-presence-playlists/{track_uri}")
+def get_track_presence_playlists_route(track_uri: str, db: Session = Depends(get_db)):
+    return get_track_presence_in_playlists(db, track_uri)
+
+
+@app.get("/track-length/{track_uri}")
+def get_track_length_route(track_uri: str, db: Session = Depends(get_db)):
+    return get_track_length(db, track_uri)

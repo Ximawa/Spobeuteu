@@ -47,7 +47,7 @@ const SidebarMain = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="/album"
                 className="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg
@@ -64,7 +64,7 @@ const SidebarMain = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="/track"
                 className="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg
@@ -81,7 +81,7 @@ const SidebarMain = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="/playlist"
                 className="flex items-center p-2 text-gray-300 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg

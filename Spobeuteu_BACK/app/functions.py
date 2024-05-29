@@ -51,8 +51,20 @@ def get_number_of_albums(db: Session):
 
 def get_artist_popularity(db: Session):
     # Query for artist popularity in a single query
-    artist_popularity_list = db.query(Artist.artist_name, func.count(Track.artist_uri).label('count')).join(
-        Track, Track.artist_uri == Artist.artist_uri).group_by(Artist.artist_name).order_by(func.count(Track.artist_uri).desc()).limit(10).all()
+    artist_popularity_list = db.query(
+        Artist.artist_name,
+        func.count(PlaylistTrack.pid).label('count')
+    ).select_from(
+        Artist
+    ).join(
+        Track, Track.artist_uri == Artist.artist_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Artist.artist_name
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).limit(10).all()
 
     # Convert the result to the desired format
     artist_popularity_list = [{"text": name, "value": count}
@@ -63,8 +75,20 @@ def get_artist_popularity(db: Session):
 
 def get_track_popularity(db: Session):
     # Query for track popularity in a single query
-    track_popularity_list = db.query(Track.track_name + " by " + Artist.artist_name, func.count(Track.track_uri).label(
-        'count')).join(Artist, Artist.artist_uri == Track.artist_uri).group_by(Track.track_name).order_by(func.count(Track.track_uri).desc()).limit(10).all()
+    track_popularity_list = db.query(
+        Track.track_name + " by " + Artist.artist_name,
+        func.count(PlaylistTrack.pid).label('count')
+    ).select_from(
+        Track
+    ).join(
+        Artist, Artist.artist_uri == Track.artist_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Track.track_name, Artist.artist_name
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).limit(10).all()
 
     # Convert the result to the desired format
     track_popularity_list = [{"text": name, "value": count}
@@ -74,15 +98,21 @@ def get_track_popularity(db: Session):
 
 
 def get_album_popularity(db: Session):
-    # Query for album popularity in a single query
+    # Query for all albums ordered by popularity
     album_popularity_list = db.query(
-        Album.album_name,  # Modify this line
-        func.count(Track.album_uri).label('count')
-    ).join(Artist, Artist.artist_uri == Track.artist_uri
-           ).join(Album, Track.album_uri == Album.album_uri
-                  ).group_by(Album.album_name
-                             ).order_by(func.count(Track.album_uri).desc()
-                                        ).limit(10).all()
+        Album.album_name,
+        func.count(PlaylistTrack.pid).label('count')
+    ).select_from(
+        Album
+    ).join(
+        Track, Track.album_uri == Album.album_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Album.album_name
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).limit(10).all()
 
     # Convert the result to the desired format
     album_popularity_list = [{"text": name, "value": count}
@@ -231,3 +261,154 @@ def get_album_popularity_by_artist(db: Session, artist_uri: str):
                              for name, count in album_popularity_list]
 
     return album_popularity_list
+
+
+def get_album_popularity_by_id(db: Session, album_uri: str):
+    # Query for all albums ordered by popularity
+    album_popularity_list = db.query(
+        Album.album_uri,
+        func.count(PlaylistTrack.pid).label('count')
+    ).select_from(
+        Album
+    ).join(
+        Track, Track.album_uri == Album.album_uri
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Album.album_uri
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).all()
+
+    # Create a dictionary with album_uri as key and its rank as value
+    album_rank_dict = {uri: rank+1 for rank,
+                       (uri, _) in enumerate(album_popularity_list)}
+
+    # Get the rank of the given album
+    album_rank = album_rank_dict.get(
+        album_uri, "Album not found in the popularity list.")
+
+    return album_rank
+
+
+def get_album_starting_by(db: Session, letter: str):
+    # Query for album URIs and names starting with the given letter
+    album_list = db.query(Album.album_uri, Album.album_name).filter(
+        Album.album_name.like(f'{letter}%')).all()
+
+    # Create a dictionary where the keys are the album URIs and the values are the album names
+    album_dict = {uri: name for uri, name in album_list}
+
+    return album_dict
+
+
+def get_album_presence_in_playlist(db: Session, album_uri: str):
+    # Query for the count of distinct playlists that contain a track from the given album
+    count = db.query(PlaylistTrack.pid).join(
+        Track, Track.track_uri == PlaylistTrack.track_uri
+    ).filter(
+        Track.album_uri == album_uri
+    ).distinct().count()
+
+    return count
+
+
+def get_album_unique_tracks_in_playlists(db: Session, album_uri: str):
+    # Query for the count of distinct tracks from the given album that appear in any playlist
+    count = db.query(PlaylistTrack.track_uri).join(
+        Track, Track.track_uri == PlaylistTrack.track_uri
+    ).filter(
+        Track.album_uri == album_uri
+    ).distinct().count()
+
+    return count
+
+
+def get_album_tracks_in_playlists(db: Session, album_uri: str):
+    # Query for the count of all instances where a track from the given album appears in a playlist
+    count = db.query(PlaylistTrack).join(
+        Track, Track.track_uri == PlaylistTrack.track_uri
+    ).filter(
+        Track.album_uri == album_uri
+    ).count()
+
+    return count
+
+
+def get_album_tracks_popularity(db: Session, album_uri: str):
+    # Query for each track in the given album and its popularity
+    tracks_popularity = db.query(
+        Track.track_name,
+        func.count(PlaylistTrack.pid).label('value')
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).filter(
+        Track.album_uri == album_uri
+    ).group_by(
+        Track.track_name
+    ).all()
+
+    # Convert the result to the desired format
+    tracks_popularity = [{"text": name, "value": value}
+                         for name, value in tracks_popularity]
+
+    return tracks_popularity
+
+
+def get_track_starting_by(db: Session, letter: str):
+    # Query for track URIs and names starting with the given letter
+    track_list = db.query(Track.track_uri, Track.track_name).filter(
+        Track.track_name.like(f'{letter}%')).all()
+
+    # Create a dictionary where the keys are the track URIs and the values are the track names
+    track_dict = {uri: name for uri, name in track_list}
+
+    return track_dict
+
+
+def get_track_popularity_rank(db: Session, track_uri: str):
+    # Query for all tracks and their popularity
+    tracks_popularity = db.query(
+        Track.track_uri,
+        func.count(PlaylistTrack.pid).label('popularity')
+    ).join(
+        PlaylistTrack, PlaylistTrack.track_uri == Track.track_uri
+    ).group_by(
+        Track.track_uri
+    ).order_by(
+        func.count(PlaylistTrack.pid).desc()
+    ).all()
+
+    # Create a dictionary with track_uri as key and its rank as value
+    track_rank_dict = {uri: rank+1 for rank,
+                       (uri, _) in enumerate(tracks_popularity)}
+
+    # Get the rank of the given track
+    track_rank = track_rank_dict.get(
+        track_uri, "Track not found in the popularity list.")
+
+    return track_rank
+
+
+def get_track_presence_in_playlists(db: Session, track_uri: str):
+    # Query for the count of playlists that contain the given track
+    count = db.query(PlaylistTrack.pid).filter(
+        PlaylistTrack.track_uri == track_uri
+    ).distinct().count()
+
+    return count
+
+
+def get_track_length(db: Session, track_uri: str):
+    # Query for the length of the given track
+    track_length = db.query(Track.duration_ms).filter(
+        Track.track_uri == track_uri
+    ).first()
+
+    if track_length is None:
+        return "Track not found."
+
+    # Convert the length to seconds
+    track_length_in_seconds = track_length[0] / 1000
+
+    return track_length_in_seconds
