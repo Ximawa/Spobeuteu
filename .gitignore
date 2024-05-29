@@ -1,5 +1,7 @@
 # dependencies
 Spobeuteu_FRONT/node_modules/
 Spobeuteu_BACK/data/
-Spobeuteu_BACK/__pycache__/
-
+Spobeuteu_BACK/app/__pycache__/
+Spobeuteu_BACK/app/routes/__pycache__/
+Spobeuteu_peuplage_BDD/__pycache__/
+Spobeuteu_peuplage_BDD/data/

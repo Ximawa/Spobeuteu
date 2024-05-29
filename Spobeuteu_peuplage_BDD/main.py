@@ -1,7 +1,5 @@
 import json
 import os
-from models import *
-# from functions import *
 from database import *
 
 champsArtist = ["artist_uri", "artist_name"]

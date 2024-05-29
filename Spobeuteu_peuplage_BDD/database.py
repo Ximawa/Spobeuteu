@@ -30,18 +30,6 @@ def get_connection():
     return conn
 
 
-def clear_tables():
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    tables = ['artists', 'albums', 'tracks', 'playlists', 'playlist_tracks']
-
-    for table in tables:
-        cursor.execute(f"DELETE FROM {table}")
-
-    conn.commit()
-
-
 def bulk_insert_artists(values):
     conn = get_connection()
     cursor = conn.cursor()

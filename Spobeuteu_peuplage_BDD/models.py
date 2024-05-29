@@ -2,6 +2,7 @@ from sqlalchemy import Column,  ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+from sqlalchemy_utils import create_database, database_exists
 
 
 # Créer une instance de Base
@@ -91,9 +92,9 @@ def get_engine():
     password = ""
     database_name = "spob"
 
-    database_url = f"mysql+pymysql://{
-        username}:{password}@localhost/{database_name}"
-    return create_engine(database_url)
+    database_url = f"mysql+pymysql://{username}:{
+        password}@localhost/{database_name}"
+    return create_engine(database_url), database_url
 
 
 def create_tables(engine):
@@ -101,7 +102,9 @@ def create_tables(engine):
 
 
 def main():
-    engine = get_engine()
+    engine, database_url = get_engine()
+    if not database_exists(database_url):
+        create_database(database_url)
     create_tables(engine)
     print("Tables created successfully")
 

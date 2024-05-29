@@ -3,3 +3,4 @@ mysql-connector-python
 mysqlclient
 tqdm
 pymysql
+sqlalchemy_utils

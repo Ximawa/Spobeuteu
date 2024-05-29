@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # TODO import from .env
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost/spobeuteu"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost/spob"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
