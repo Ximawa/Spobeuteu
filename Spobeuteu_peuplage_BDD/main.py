@@ -1,6 +1,9 @@
 import json
 import os
 from database import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 champsArtist = ["artist_uri", "artist_name"]
 champsAlbum = ["album_uri", "album_name", "artist_uri"]
@@ -16,13 +19,14 @@ def load_data(file_path):
 
 
 def main():
-    # clear_tables()
+    clear_tables()
 
+    number_of_files = int(os.getenv("NUMBER_OF_FILES_TO_PROCESS"))
     data_dir = 'data'
+
     json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
 
-    # Seulement les 10 premiers fichiers pour test
-    for json_file in json_files[:10]:
+    for json_file in json_files[:number_of_files]:
         file_path = os.path.join(data_dir, json_file)
         data = load_data(file_path)
 

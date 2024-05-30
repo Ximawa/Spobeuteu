@@ -25,6 +25,19 @@ def get_connection():
     return conn
 
 
+def clear_tables():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+    cursor.execute("TRUNCATE TABLE albums;")
+    cursor.execute("TRUNCATE TABLE playlist_tracks;")
+    cursor.execute("TRUNCATE TABLE artists;")
+    cursor.execute("TRUNCATE TABLE tracks;")
+    cursor.execute("TRUNCATE TABLE playlists;")
+    cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+    conn.commit()
+
+
 def bulk_insert_artists(values):
     conn = get_connection()
     cursor = conn.cursor()
