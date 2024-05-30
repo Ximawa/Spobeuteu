@@ -4,3 +4,4 @@ mysqlclient
 tqdm
 pymysql
 sqlalchemy_utils
+python-dotenv

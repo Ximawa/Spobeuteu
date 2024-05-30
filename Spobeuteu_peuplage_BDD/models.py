@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy_utils import create_database, database_exists
+import os
+from dotenv import load_dotenv
 
 
 # Créer une instance de Base
@@ -88,12 +90,15 @@ class PlaylistTrack(Base):
 
 
 def get_engine():
-    username = "root"
-    password = ""
-    database_name = "spob"
+    load_dotenv()
 
-    database_url = f"mysql+pymysql://{username}:{
-        password}@localhost/{database_name}"
+    host = os.getenv("DB_HOST")
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+    database = os.getenv("DB_NAME")
+
+    database_url = f"mysql+pymysql://{user}:{
+        password}@{host}/{database}"
     return create_engine(database_url), database_url
 
 

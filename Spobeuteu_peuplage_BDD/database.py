@@ -1,13 +1,8 @@
 import mysql.connector
-import time
+import os
+from dotenv import load_dotenv
 
-
-DB_CONFIG = {
-    'user': 'root',
-    'password': '',
-    'host': 'localhost',
-    'database': 'spobeuteu',
-}
+load_dotenv()
 
 BATCH_SIZE_ARTISTS = 1000
 BATCH_SIZE_ALBUMS = 5000
@@ -22,10 +17,10 @@ def get_connection():
     global conn
     if conn is None:
         conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="spob"
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
         )
     return conn
 
