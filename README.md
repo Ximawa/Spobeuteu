@@ -20,6 +20,7 @@ py models.py
 ```
 
 ### Peuplage de la BDD
+Il vous faudra ajouter le dossier data contenant les json du dataset dans le dossier comme ceci : Spobeuteu/Spobeuteu_peuplage_BDD/data/
 Par défaut, le script va remplir la BDD avec 5 fichiers JSON, mais cela est paramétrable dans le fichier .env
 ```
 py main.py
@@ -37,7 +38,7 @@ Sinon, vous pouvez le lancer en local avec la BDD que vous avez créée et peupl
 ### Backend
 
 ```
-cd Spobeuteu_BACK
+cd ../Spobeuteu_BACK
 ```
 #### Installation des dépendances
 ```
