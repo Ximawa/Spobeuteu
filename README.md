@@ -35,33 +35,33 @@ Vous pouvez tester les requêtes directement à l'aide de Swagger à l'adresse s
 
 Sinon, vous pouvez le lancer en local avec la BDD que vous avez créée et peuplée ci-dessus.
 
-### Backend
+## Backend
 
 ```
 cd ../Spobeuteu_BACK
 ```
-#### Installation des dépendances
+### Installation des dépendances
 ```
 pip install -r requirements.txt
 ```
-#### Lancement de l'API
+### Lancement de l'API
 ```
 uvicorn app.main:app
 ```
 
 Une fois l'API lancée, Swagger sera accessible à l'adresse suivante : http://localhost:8000/docs
 
-### Frontend
+## Frontend
 
 Dans un autre terminal
 ```
 cd Spobeuteu_FRONT
 ```
-#### Installation des dépendances
+### Installation des dépendances
 ```
 npm install
 ```
-#### Lancement du serveur front
+### Lancement du serveur front
 ```
 npm start
 ```
